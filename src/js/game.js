@@ -125,6 +125,18 @@ function targetCell( game, g ) {
         y: Math.round( p.y ) + DIRS[ p.dir ].y * 4,
       };
     case 'inky':
+      {
+        const d = DIRS[ p.dir ];
+        const blinky = game.ghosts.find( ( ghost ) => ghost.kind === 'blinky' );
+        const point = {
+          x: Math.round( p.x ) + d.x * 2,
+          y: Math.round( p.y ) + d.y * 2,
+        };
+        return {
+          x: point.x * 2 - blinky.x,
+          y: point.y * 2 - blinky.y,
+        };
+      }
     case 'clyde':
       // Estas estrategias se implementan en pasos posteriores.
       return {
