@@ -112,20 +112,26 @@ function movePacman( game ) {
 
 function targetCell( game, g ) {
   const p = game.pacman;
-  const target = {
-    x: Math.round( p.x ),
-    y: Math.round( p.y ),
-  };
 
-  // Todas las personalidades usan temporalmente el objetivo de Blinky.
   switch ( g.kind ) {
     case 'blinky':
+      return {
+        x: Math.round( p.x ),
+        y: Math.round( p.y ),
+      };
     case 'pinky':
     case 'inky':
     case 'clyde':
-      return target;
+      // Estas estrategias se implementan en pasos posteriores.
+      return {
+        x: Math.round( p.x ),
+        y: Math.round( p.y ),
+      };
     default:
-      return target;
+      return {
+        x: Math.round( p.x ),
+        y: Math.round( p.y ),
+      };
   }
 }
 
