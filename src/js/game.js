@@ -138,11 +138,15 @@ function targetCell( game, g ) {
         };
       }
     case 'clyde':
-      // Estas estrategias se implementan en pasos posteriores.
-      return {
-        x: Math.round( p.x ),
-        y: Math.round( p.y ),
-      };
+      {
+        const pacmanCell = {
+          x: Math.round( p.x ),
+          y: Math.round( p.y ),
+        };
+        const distance = Math.abs( g.x - pacmanCell.x ) + Math.abs( g.y - pacmanCell.y );
+        if ( distance > 8 ) return pacmanCell;
+        return { x: 1, y: game.grid.length - 2 };
+      }
     default:
       return {
         x: Math.round( p.x ),
