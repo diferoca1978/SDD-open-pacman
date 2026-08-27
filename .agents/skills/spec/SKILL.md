@@ -2,7 +2,7 @@
 name: spec
 description: Designs and develops specs following the spec-driven method. Asks clarifying questions before proposing structure, and builds the spec section by section. Use it when starting a large feature, before writing code.
 disable-model-invocation: true
-argument-hint: 'short feature description or requirement'
+argument-hint: "short feature description or requirement"
 allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Bash(ls:*), Bash(cat:*), Bash(date:*)
 ---
 
@@ -124,7 +124,7 @@ When the content is ready (either because you had everything, or because all sec
    # AutoCreateBranch — controls whether /spec-impl creates the git branch automatically.
    #   true  (default) → /spec-impl creates and switches to spec-NN-slug without asking
    #   false           → /spec-impl asks for [y/N] confirmation before creating the branch
-   AutoCreateBranch: true
+   AutoCreateBranch: false
    ```
 
 8. Confirm to the user:
