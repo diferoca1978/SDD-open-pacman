@@ -120,6 +120,10 @@ function targetCell( game, g ) {
         y: Math.round( p.y ),
       };
     case 'pinky':
+      return {
+        x: Math.round( p.x ) + DIRS[ p.dir ].x * 4,
+        y: Math.round( p.y ) + DIRS[ p.dir ].y * 4,
+      };
     case 'inky':
     case 'clyde':
       // Estas estrategias se implementan en pasos posteriores.
