@@ -14,6 +14,7 @@ const PACMAN_SPEED = 0.125; // 1/8 celda/frame -> alinea cada 8 frames
 const GHOST_SPEED = 0.1;    // 1/10 celda/frame
 const RELEASE_ORDER = [ 'blinky', 'pinky', 'inky', 'clyde' ];
 const RELEASE_FRAMES = 90;
+const GHOST_EXIT = { x: 13, y: 11 };
 
 // Crea una partida nueva. Copia MAZE (pristino) a game.grid para poder comer
 // dots sin destruir el original, y reiniciar.
@@ -44,6 +45,7 @@ function createGame() {
       dir: 'up',
       speed: GHOST_SPEED,
       kind: g.kind,
+      home: { x: g.x, y: g.y },
       released: false,
       releaseAt: RELEASE_FRAMES * RELEASE_ORDER.indexOf( g.kind ),
     } ) ),
@@ -53,6 +55,12 @@ function createGame() {
 
 function aligned( v ) {
   return Math.abs( v - Math.round( v ) ) < 1e-3;
+}
+
+function inPen( g ) {
+  const x = Math.round( g.x );
+  const y = Math.round( g.y );
+  return x >= 11 && x <= 16 && y >= 12 && y <= 15;
 }
 
 // Una celda es muro para el actor dado?
@@ -80,9 +88,13 @@ function canMove( grid, x, y, dir, actor ) {
 
 function canGhostMove( game, g, dir ) {
   if ( !canMove( game.grid, g.x, g.y, dir, 'ghost' ) ) return false;
+  const d = DIRS[ dir ];
+  const tx = Math.round( g.x ) + d.x;
+  const ty = Math.round( g.y ) + d.y;
+  // La puerta solo se cruza hacia arriba; los fantasmas liberados no reingresan.
+  if ( game.grid[ ty ] && game.grid[ ty ][ tx ] === 3 && dir === 'down' ) return false;
   if ( g.released ) return true;
 
-  const d = DIRS[ dir ];
   const nextX = g.x + d.x;
   const nextY = g.y + d.y;
   return nextX >= 11 && nextX <= 16 && nextY >= 13 && nextY <= 15;
@@ -171,7 +183,10 @@ function targetCell( game, g ) {
 }
 
 function decideGhost( game, g ) {
-  const target = targetCell( game, g );
+  let target;
+  if ( !g.released ) target = g.home;
+  else if ( inPen( g ) ) target = GHOST_EXIT;
+  else target = targetCell( game, g );
 
   const options = Object.keys( DIRS ).filter(
     ( dir ) => dir !== OPPOSITE[ g.dir ] && canGhostMove( game, g, dir )
@@ -219,10 +234,13 @@ function resetPositions( game ) {
   p.y = PACMAN_START.y;
   p.dir = 'left';
   p.nextDir = null;
+  game.releaseClock = 0;
   game.ghosts.forEach( ( g, i ) => {
     g.x = GHOST_STARTS[ i ].x;
     g.y = GHOST_STARTS[ i ].y;
     g.dir = 'up';
+    g.released = false;
+    g.releaseAt = RELEASE_FRAMES * RELEASE_ORDER.indexOf( g.kind );
   } );
 }
 
